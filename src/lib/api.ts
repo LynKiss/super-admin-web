@@ -42,7 +42,7 @@ async function parseResponse<T>(response: Response): Promise<T> {
         ? Array.isArray(body.message)
           ? body.message[0]
           : body.message
-        : `Request failed with HTTP ${response.status}`;
+        : `Yeu cau that bai voi HTTP ${response.status}`;
     throw new ApiError(message, response.status);
   }
 

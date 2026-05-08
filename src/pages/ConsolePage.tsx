@@ -128,7 +128,7 @@ export default function ConsolePage() {
         await openProject(data[0]);
       }
     } catch (err) {
-      setProjectError(err instanceof Error ? err.message : 'Cannot load projects.');
+      setProjectError(err instanceof Error ? err.message : 'Khong the tai danh sach du an.');
     } finally {
       setLoadingProjects(false);
     }
@@ -153,7 +153,7 @@ export default function ConsolePage() {
       setDetail({ permissions, admins, permissionSets, auditLogs });
       setSelectedAdminId(admins[0]?.userId ?? '');
     } catch (err) {
-      setDetailError(err instanceof Error ? err.message : 'Cannot sync project data.');
+      setDetailError(err instanceof Error ? err.message : 'Khong the dong bo du lieu du an.');
     } finally {
       setLoadingDetail(false);
     }
@@ -203,7 +203,7 @@ export default function ConsolePage() {
         });
         setProjects((current) => [created, ...current]);
         setProjectForm(emptyProjectForm);
-        setNotice('Project registered.');
+        setNotice('Da dang ky du an.');
         await openProject(created);
       } else if (editingProjectId) {
         const payload: Partial<ProjectFormInput> = {
@@ -219,21 +219,21 @@ export default function ConsolePage() {
         setProjects((current) =>
           current.map((project) => (project.projectId === updated.projectId ? updated : project)),
         );
-        setNotice('Project updated.');
+        setNotice('Da cap nhat du an.');
         startCreateProject();
         if (selectedProjectId === updated.projectId) {
           await openProject(updated);
         }
       }
     } catch (err) {
-      setProjectError(err instanceof Error ? err.message : 'Cannot save project.');
+      setProjectError(err instanceof Error ? err.message : 'Khong the luu du an.');
     } finally {
       setSavingProject(false);
     }
   }
 
   async function deleteProject(project: Project) {
-    const confirmed = window.confirm(`Delete project "${project.name}"?`);
+    const confirmed = window.confirm(`Xoa du an "${project.name}"?`);
     if (!confirmed) return;
 
     setProjectError(null);
@@ -248,9 +248,9 @@ export default function ConsolePage() {
       if (editingProjectId === project.projectId) {
         startCreateProject();
       }
-      setNotice('Project deleted.');
+      setNotice('Da xoa du an.');
     } catch (err) {
-      setProjectError(err instanceof Error ? err.message : 'Cannot delete project.');
+      setProjectError(err instanceof Error ? err.message : 'Khong the xoa du an.');
     }
   }
 
@@ -284,7 +284,7 @@ export default function ConsolePage() {
     if (!selectedProject || !selectedAdmin) return;
     if (selectedPermissionKeys.size === 0) {
       const confirmed = window.confirm(
-        `Save zero permissions for ${selectedAdmin.email}? This creates an explicit empty override.`,
+        `Luu 0 quyen cho ${selectedAdmin.email}? Tai khoan nay se bi ghi de thanh khong co quyen nao.`,
       );
       if (!confirmed) return;
     }
@@ -309,14 +309,14 @@ export default function ConsolePage() {
             : admin,
         ),
       }));
-      setNotice('Permissions synced to project backend.');
+      setNotice('Da dong bo quyen sang backend du an.');
       const [permissionSets, auditLogs] = await Promise.all([
         superAdminApi.listPermissionSets(selectedProject.projectId),
         superAdminApi.listAuditLogs(selectedProject.projectId, 40),
       ]);
       setDetail((current) => ({ ...current, permissionSets, auditLogs }));
     } catch (err) {
-      setDetailError(err instanceof Error ? err.message : 'Cannot sync permissions.');
+      setDetailError(err instanceof Error ? err.message : 'Khong the dong bo quyen.');
     } finally {
       setSavingPermissions(false);
     }
@@ -344,7 +344,7 @@ export default function ConsolePage() {
             <span className="api-chip">{getApiBaseUrl()}</span>
             <button type="button" className="ghost-button" onClick={() => void handleLogout()}>
               <LogOut size={16} />
-              Logout
+              Dang xuat
             </button>
           </div>
         </div>
@@ -363,10 +363,10 @@ export default function ConsolePage() {
           <aside className="project-column">
             <div className="section-header">
               <div>
-                <p className="eyebrow">Registry</p>
-                <h1>Projects</h1>
+                <p className="eyebrow">Danh ba</p>
+                <h1>Du an</h1>
               </div>
-              <button type="button" className="icon-button" onClick={startCreateProject} title="New project">
+              <button type="button" className="icon-button" onClick={startCreateProject} title="Du an moi">
                 <Plus size={17} />
               </button>
             </div>
@@ -374,63 +374,63 @@ export default function ConsolePage() {
             <form className="project-form" onSubmit={(event) => void saveProject(event)}>
               <div className="two-col">
                 <Field
-                  label="Project ID"
+                  label="Ma du an"
                   value={projectForm.projectId}
                   disabled={formMode === 'edit'}
                   onChange={(value) => setProjectForm((current) => ({ ...current, projectId: value }))}
                   placeholder="da-quanaosop"
                 />
                 <Field
-                  label="Status"
+                  label="Trang thai"
                   type="select"
                   value={projectForm.status}
                   onChange={(value) =>
                     setProjectForm((current) => ({ ...current, status: value as ProjectStatus }))
                   }
                   options={[
-                    { value: 'active', label: 'Active' },
-                    { value: 'disabled', label: 'Disabled' },
+                    { value: 'active', label: 'Hoat dong' },
+                    { value: 'disabled', label: 'Tat' },
                   ]}
                 />
               </div>
               <Field
-                label="Name"
+                label="Ten du an"
                 value={projectForm.name}
                 onChange={(value) => setProjectForm((current) => ({ ...current, name: value }))}
                 placeholder="Quan Ao Shop"
               />
               <Field
-                label="Backend base URL"
+                label="URL backend"
                 value={projectForm.baseUrl}
                 onChange={(value) => setProjectForm((current) => ({ ...current, baseUrl: value }))}
                 placeholder="https://project-api.onrender.com"
               />
               <Field
-                label={formMode === 'create' ? 'Sync secret' : 'New sync secret'}
+                label={formMode === 'create' ? 'Khoa dong bo' : 'Khoa dong bo moi'}
                 value={projectForm.syncSecret}
                 onChange={(value) => setProjectForm((current) => ({ ...current, syncSecret: value }))}
-                placeholder={formMode === 'create' ? 'Minimum 16 characters' : 'Leave empty to keep current'}
+                placeholder={formMode === 'create' ? 'Toi thieu 16 ky tu' : 'De trong neu giu khoa hien tai'}
                 type="password"
               />
               <div className="form-actions">
                 {formMode === 'edit' ? (
                   <button type="button" className="ghost-button" onClick={startCreateProject}>
                     <X size={15} />
-                    Cancel
+                    Huy
                   </button>
                 ) : null}
                 <button type="submit" className="primary-button" disabled={savingProject}>
                   {savingProject ? <LoaderCircle className="spin" size={16} /> : <Save size={16} />}
-                  {formMode === 'create' ? 'Register' : 'Save'}
+                  {formMode === 'create' ? 'Dang ky' : 'Luu'}
                 </button>
               </div>
             </form>
 
             <div className="project-list">
               {loadingProjects ? (
-                <InlineLoading label="Loading projects" />
+                <InlineLoading label="Dang tai du an" />
               ) : projects.length === 0 ? (
-                <p className="empty-text">No registered projects.</p>
+                <p className="empty-text">Chua co du an nao.</p>
               ) : (
                 projects.map((project) => (
                   <article
@@ -449,7 +449,7 @@ export default function ConsolePage() {
                         type="button"
                         className="icon-button flat"
                         onClick={() => startEditProject(project)}
-                        title="Edit project"
+                        title="Sua du an"
                       >
                         <Pencil size={15} />
                       </button>
@@ -457,7 +457,7 @@ export default function ConsolePage() {
                         type="button"
                         className="icon-button danger"
                         onClick={() => void deleteProject(project)}
-                        title="Delete project"
+                        title="Xoa du an"
                       >
                         <Trash2 size={15} />
                       </button>
@@ -472,14 +472,14 @@ export default function ConsolePage() {
             {!selectedProject ? (
               <div className="empty-state">
                 <Shield size={34} />
-                <h2>Select a project</h2>
-                <p>Project permissions and admins will appear here.</p>
+                <h2>Chon du an</h2>
+                <p>Danh sach admin va quyen se hien thi tai day.</p>
               </div>
             ) : (
               <>
                 <div className="project-summary">
                   <div>
-                    <p className="eyebrow">Selected project</p>
+                    <p className="eyebrow">Du an dang chon</p>
                     <h2>{selectedProject.name}</h2>
                     <a href={selectedProject.baseUrl} target="_blank" rel="noreferrer">
                       <ExternalLink size={14} />
@@ -493,26 +493,26 @@ export default function ConsolePage() {
                     disabled={loadingDetail}
                   >
                     {loadingDetail ? <LoaderCircle className="spin" size={16} /> : <RefreshCw size={16} />}
-                    Sync
+                    Dong bo
                   </button>
                 </div>
 
                 {loadingDetail ? (
-                  <InlineLoading label="Syncing project data" />
+                  <InlineLoading label="Dang dong bo du lieu du an" />
                 ) : (
                   <div className="detail-grid">
                     <section className="admin-panel">
                       <div className="section-header">
                         <div>
-                          <p className="eyebrow">Accounts</p>
-                          <h2>Admin and staff</h2>
+                          <p className="eyebrow">Tai khoan</p>
+                          <h2>Admin va nhan vien</h2>
                         </div>
                         <span className="count-chip">{detail.admins.length}</span>
                       </div>
                       <SearchInput
                         value={adminQuery}
                         onChange={setAdminQuery}
-                        placeholder="Search account"
+                        placeholder="Tim tai khoan"
                       />
                       <div className="admin-list">
                         {filteredAdmins.map((admin) => (
@@ -530,15 +530,15 @@ export default function ConsolePage() {
                             <span className="role-chip">{admin.role}</span>
                           </button>
                         ))}
-                        {filteredAdmins.length === 0 ? <p className="empty-text">No matching accounts.</p> : null}
+                        {filteredAdmins.length === 0 ? <p className="empty-text">Khong co tai khoan phu hop.</p> : null}
                       </div>
                     </section>
 
                     <section className="permission-panel">
                       <div className="section-header">
                         <div>
-                          <p className="eyebrow">Permission override</p>
-                          <h2>{selectedAdmin ? selectedAdmin.email : 'Choose account'}</h2>
+                          <p className="eyebrow">Ghi de quyen</p>
+                          <h2>{selectedAdmin ? selectedAdmin.email : 'Chon tai khoan'}</h2>
                         </div>
                         <button
                           type="button"
@@ -547,7 +547,7 @@ export default function ConsolePage() {
                           disabled={!selectedAdmin || savingPermissions}
                         >
                           {savingPermissions ? <LoaderCircle className="spin" size={16} /> : <Save size={16} />}
-                          Apply
+                          Ap dung
                         </button>
                       </div>
 
@@ -556,23 +556,23 @@ export default function ConsolePage() {
                           <div className="override-note">
                             <KeyRound size={16} />
                             {selectedAdmin.hasOverride
-                              ? `${selectedPermissionKeys.size} explicit permissions selected.`
-                              : 'This account uses role defaults until you apply an override.'}
+                              ? `Dang chon ${selectedPermissionKeys.size} quyen ghi de.`
+                              : 'Tai khoan dang dung quyen theo role cho den khi ban ap dung ghi de.'}
                           </div>
 
                           <div className="permission-toolbar">
                             <SearchInput
                               value={permissionQuery}
                               onChange={setPermissionQuery}
-                              placeholder="Search permission"
+                              placeholder="Tim quyen"
                             />
                             <button type="button" className="ghost-button" onClick={selectAllVisible}>
                               <Check size={15} />
-                              Select visible
+                              Chon tat ca
                             </button>
                             <button type="button" className="ghost-button" onClick={clearSelection}>
                               <X size={15} />
-                              Clear
+                              Bo chon
                             </button>
                           </div>
 
@@ -607,14 +607,14 @@ export default function ConsolePage() {
                               </div>
                             ))}
                             {groupedPermissions.length === 0 ? (
-                              <p className="empty-text">No matching permissions.</p>
+                              <p className="empty-text">Khong co quyen phu hop.</p>
                             ) : null}
                           </div>
                         </>
                       ) : (
                         <div className="empty-state compact">
                           <Users size={28} />
-                          <p>Choose an admin or staff account.</p>
+                          <p>Chon mot tai khoan admin hoac nhan vien.</p>
                         </div>
                       )}
                     </section>
@@ -624,10 +624,10 @@ export default function ConsolePage() {
                 <section className="activity-panel">
                   <div className="section-header">
                     <div>
-                      <p className="eyebrow">Audit</p>
-                      <h2>Recent changes</h2>
+                      <p className="eyebrow">Nhat ky</p>
+                      <h2>Thay doi gan day</h2>
                     </div>
-                    <span className="count-chip">{detail.permissionSets.length} overrides</span>
+                    <span className="count-chip">{detail.permissionSets.length} ghi de</span>
                   </div>
                   <AuditList logs={selectedProjectAudit} />
                 </section>
@@ -709,7 +709,7 @@ function Status({ tone, message }: { tone: 'error' | 'success'; message: string 
 }
 
 function StatusPill({ status }: { status: ProjectStatus }) {
-  return <span className={`status-pill ${status}`}>{status}</span>;
+  return <span className={`status-pill ${status}`}>{status === 'active' ? 'Hoat dong' : 'Tat'}</span>;
 }
 
 function InlineLoading({ label }: { label: string }) {
@@ -723,7 +723,7 @@ function InlineLoading({ label }: { label: string }) {
 
 function AuditList({ logs }: { logs: AuditLog[] }) {
   if (logs.length === 0) {
-    return <p className="empty-text">No audit events.</p>;
+    return <p className="empty-text">Chua co su kien nhat ky.</p>;
   }
 
   return (
@@ -732,7 +732,7 @@ function AuditList({ logs }: { logs: AuditLog[] }) {
         <div key={log._id} className="audit-row">
           <span>
             <strong>{log.action}</strong>
-            <small>{log.actorEmail || 'system'}</small>
+            <small>{log.actorEmail || 'he thong'}</small>
           </span>
           <span>
             <small>{log.targetUserId || log.projectId || 'global'}</small>
@@ -746,21 +746,21 @@ function AuditList({ logs }: { logs: AuditLog[] }) {
 
 function validateProjectForm(input: ProjectFormInput, mode: 'create' | 'edit') {
   if (mode === 'create' && input.projectId.trim().length < 2) {
-    return 'Project ID must be at least 2 characters.';
+    return 'Ma du an phai co it nhat 2 ky tu.';
   }
   if (input.name.trim().length < 2) {
-    return 'Project name must be at least 2 characters.';
+    return 'Ten du an phai co it nhat 2 ky tu.';
   }
   try {
     new URL(input.baseUrl);
   } catch {
-    return 'Backend base URL is invalid.';
+    return 'URL backend khong hop le.';
   }
   if (mode === 'create' && input.syncSecret.trim().length < 16) {
-    return 'Sync secret must be at least 16 characters.';
+    return 'Khoa dong bo phai co it nhat 16 ky tu.';
   }
   if (mode === 'edit' && input.syncSecret.trim() && input.syncSecret.trim().length < 16) {
-    return 'New sync secret must be at least 16 characters.';
+    return 'Khoa dong bo moi phai co it nhat 16 ky tu.';
   }
   return null;
 }

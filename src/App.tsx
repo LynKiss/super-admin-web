@@ -17,7 +17,7 @@ export default function App() {
     return (
       <main className="loading-screen">
         <LoaderCircle className="spin" size={22} />
-        <span>Loading console</span>
+        <span>Dang tai bang dieu khien</span>
       </main>
     );
   }

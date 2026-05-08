@@ -32,7 +32,7 @@ export default function LoginPage() {
     event.preventDefault();
     const normalizedEmail = email.trim().toLowerCase();
     if (!normalizedEmail || !password) {
-      setError('Email and password are required.');
+      setError('Vui long nhap email va mat khau.');
       return;
     }
 
@@ -42,7 +42,7 @@ export default function LoginPage() {
       await login(normalizedEmail, password);
       navigate(from, { replace: true });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed.');
+      setError(err instanceof Error ? err.message : 'Dang nhap that bai.');
     } finally {
       setSubmitting(false);
     }
@@ -56,8 +56,8 @@ export default function LoginPage() {
           <span>Central Super Admin</span>
         </div>
         <div className="login-visual-copy">
-          <p>Central authority</p>
-          <h1>Project access control for every backend.</h1>
+          <p>Quan tri trung tam</p>
+          <h1>Phan quyen admin cho tat ca backend.</h1>
         </div>
       </section>
 
@@ -67,8 +67,8 @@ export default function LoginPage() {
             <ShieldCheck size={24} />
             <span>Central Super Admin</span>
           </div>
-          <p className="eyebrow">Secure console</p>
-          <h2>Sign in</h2>
+          <p className="eyebrow">Bang dieu khien bao mat</p>
+          <h2>Dang nhap</h2>
           <p className="muted api-base">API: {getApiBaseUrl()}</p>
 
           {error ? (
@@ -94,7 +94,7 @@ export default function LoginPage() {
             </label>
 
             <label className="field">
-              <span>Password</span>
+              <span>Mat khau</span>
               <div className="input-icon">
                 <LockKeyhole size={17} />
                 <input
@@ -102,13 +102,13 @@ export default function LoginPage() {
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                   autoComplete="current-password"
-                  placeholder="Enter password"
+                  placeholder="Nhap mat khau"
                 />
                 <button
                   type="button"
                   className="icon-button flat"
                   onClick={() => setShowPassword((value) => !value)}
-                  title={showPassword ? 'Hide password' : 'Show password'}
+                  title={showPassword ? 'An mat khau' : 'Hien mat khau'}
                 >
                   {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
@@ -117,7 +117,7 @@ export default function LoginPage() {
 
             <button type="submit" className="primary-button full" disabled={submitting}>
               {submitting ? <LoaderCircle className="spin" size={17} /> : <ShieldCheck size={17} />}
-              {submitting ? 'Signing in' : 'Enter console'}
+              {submitting ? 'Dang dang nhap' : 'Vao bang dieu khien'}
             </button>
           </form>
         </div>
